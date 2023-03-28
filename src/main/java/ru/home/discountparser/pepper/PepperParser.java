@@ -2,8 +2,7 @@ package ru.home.discountparser.pepper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -17,8 +16,8 @@ import com.google.common.base.Strings;
 @Component
 public class PepperParser {
 
-    public static List<Pepper> newListPeppers = new ArrayList<>();
-    public static List<Pepper> currentListPeppers = new ArrayList<>();
+    public static CopyOnWriteArrayList<Pepper> newListPeppers = new CopyOnWriteArrayList<>();
+    public static CopyOnWriteArrayList<Pepper> currentListPeppers = new CopyOnWriteArrayList<>();
     private final String urlPepper = "https://www.pepper.ru/new";
     private final double alertingPricePercent = 30;
     private final String textForAlert = "ноутбук";
@@ -73,12 +72,8 @@ public class PepperParser {
                     return;
                 }
             }
-        } catch (HttpStatusException e) {
-            System.out.println(LocalDateTime.now());
-            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println(LocalDateTime.now());
-            throw new RuntimeException(e);
+            System.out.println(LocalDateTime.now() + " PepperParser");
         }
 
     }
