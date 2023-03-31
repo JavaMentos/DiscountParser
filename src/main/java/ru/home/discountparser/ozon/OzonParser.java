@@ -15,26 +15,51 @@ public class OzonParser {
     @Autowired
     private Selenium selenium;
 
-    {
+    static {
         Ozon ozon = new Ozon();
-        ozon.setUrlGoods("https://www.ozon.ru/product/trenazher-dlya-doma-900-corength-decathlon-639989756/?oos_search=false&sh=4zzF_RL_dQ");
+        ozon.setUrlGoods("https://www.ozon.ru/product/samokat-detskiy-mid-5-s-ruchnym-tormozom-i-podveskoy-oxelo-h-decathlon-910251634/?oos_search=false&sh=I15BOSDFqg");
         listOzons.add(ozon);
 
         Ozon ozon1 = new Ozon();
-        ozon1.setUrlGoods("https://www.ozon.ru/product/mikrovolnovaya-pech-pioneer-20-l-s-led-displeem-8-avtomaticheskih-programm-5-urovney-357362808/?avtc=1&avte=4&avts=1680034586&sh=5ovwXqiMgA");
+        ozon1.setUrlGoods("https://www.ozon.ru/product/shlem-bokserskiy-900-otkrytyy-dlya-vzroslyh-outshock-h-decathlon-chernyy-179523469/?oos_search=false&sh=I15BORL6kA");
         listOzons.add(ozon1);
 
         Ozon ozon2 = new Ozon();
-        ozon2.setUrlGoods("https://www.ozon.ru/search/?deny_category_prediction=true&from_global=true&text=%D0%A1%D1%82%D0%B5%D0%BF%D0%BF%D0%B5%D1%80&product_id=185621697");
+        ozon2.setUrlGoods("https://www.ozon.ru/product/samokat-detskiy-mid-5-s-ruchnym-tormozom-i-podveskoy-oxelo-h-decathlon-910251634/?oos_search=false&sh=I15BOSDFqg");
         listOzons.add(ozon2);
 
         Ozon ozon3 = new Ozon();
-        ozon3.setUrlGoods("https://www.ozon.ru/product/robot-pylesos-pioneer-vc701r-chernyy-268661572/?advert=DoZ7ASy48O13FEmtST7Cf8WT7FJ6Q-myXSqlitGtJJRPbPB1Pv4GsC_MfvyrGVAz-LFrvj1CknChq9MQ8RMohcrmbwmdGA2naee4I_fKxl7gANVBFx-W3wdeg8Kv4OvHjUFg0-Qq5YjGYB-6JwLO27EbJawh99iBDLt4LW6i3NZi-zUEUSBtX11UWo4&avtc=1&avte=2&avts=1680035945&sh=5ovwXlzWmQ");
+        ozon3.setUrlGoods("https://www.ozon.ru/product/trenazher-dlya-doma-900-corength-decathlon-639989756/?oos_search=false&sh=I15BOVswUg");
         listOzons.add(ozon3);
 
+        Ozon ozon4 = new Ozon();
+        ozon3.setUrlGoods("https://www.ozon.ru/product/silovaya-stantsiya-training-station-900-domyos-h-decathlon-172946373/?oos_search=false&sh=I15BOYe1DQ");
+        listOzons.add(ozon4);
+
+        Ozon ozon5 = new Ozon();
+        ozon3.setUrlGoods("https://www.ozon.ru/product/kruizer-cherno-zelenyy-yamba-900-oxelo-h-decathlon-179049667/?oos_search=false&sh=I15BOZeJZw");
+        listOzons.add(ozon5);
+
+        Ozon ozon6 = new Ozon();
+        ozon3.setUrlGoods("https://www.ozon.ru/product/kruizer-cherno-zelenyy-yamba-900-oxelo-h-decathlon-179049667/?oos_search=false&sh=I15BOZeJZw");
+        listOzons.add(ozon6);
+
+        Ozon ozon7 = new Ozon();
+        ozon3.setUrlGoods("https://www.ozon.ru/product/grusha-bokserskaya-i-perchatki-detskie-4-untsii-outshock-h-decathlon-175261325/?oos_search=false&sh=I15BORk8Dw");
+        listOzons.add(ozon7);
+
+        Ozon ozon8 = new Ozon();
+        ozon3.setUrlGoods("https://www.ozon.ru/product/stepper-ms500-domyos-h-decathlon-185621697/?oos_search=false&sh=I15BOZK8tQ");
+        listOzons.add(ozon8);
+
+        Ozon ozon9 = new Ozon();
+        ozon3.setUrlGoods("https://www.ozon.ru/product/pedali-dlya-gornogo-velosipeda-free-ride-alyuminievye-rockrider-h-dekatlon-175089029/?oos_search=false&sh=I15BOekxEA");
+        listOzons.add(ozon9);
     }
 
     public void checkAvailabilityOfGoods() {
+        if(OzonParser.listOzons.size() == 0) return;
+
         Iterator<Ozon> iterator = OzonParser.listOzons.iterator();
         while (iterator.hasNext()) {
 
@@ -48,7 +73,7 @@ public class OzonParser {
 
             boolean AvailableGoods = isGoodsUnavailable();
 
-            if (!AvailableGoods) {
+            if (AvailableGoods) {
                 File file = takeScreenshot();
                 if (file != null) {
                     ozon.setScreenShot(file);
@@ -62,17 +87,19 @@ public class OzonParser {
 
     private boolean isGoodsUnavailable() {
         try {
-            selenium.getElementByClassName("zm9");
-            return true;
-        } catch (NoSuchElementException e) {
+//            selenium.getElementByClassName("zm9");
+            selenium.getElementByXpath("//h2[1][contains(text(),'Этот товар закончился')]");
             return false;
+        } catch (NoSuchElementException e) {
+            return true;
         }
 
     }
 
     private File takeScreenshot() {
         try {
-            WebElement element = selenium.getElementByXpath("//*[@id='layoutPage']/div[1]/div[5]/div[3]/div[1]/div[1]");
+            WebElement element = selenium.getElementByXpath("//div[1][@data-widget='stickyContainer']");
+//            WebElement element = selenium.getElementByXpath("//*[@id='layoutPage']/div[1]/div[4]/div[3]/div[1]/div[1]/div[1]/div/div[2]");
 //            WebElement element = selenium.getElementByXpath("//*[@id='layoutPage']/div[1]/div[5]/div[3]/div[1]/div[1]/div[1]/div/div[2]/div/div[1]/div[1]/div/img");
             return element.getScreenshotAs(OutputType.FILE);
         } catch (TimeoutException | NoSuchElementException e) {

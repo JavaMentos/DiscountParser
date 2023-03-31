@@ -2,6 +2,7 @@ package ru.home.discountparser.scheduler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 
@@ -23,7 +24,7 @@ public class SchedulerPepper {
     private PepperParser pr;
 
 
-    //    @Scheduled(initialDelayString = "${schedule.pepper.init}", fixedDelayString = "${schedule.pepper.work}")
+        @Scheduled(initialDelayString = "${schedule.pepper.init}", fixedDelayString = "${schedule.pepper.work}")
     public void runCheckNewPostFromPepper() {
         pr.checkNewPosts();
         PepperParser.currentListPeppers.addAll(PepperParser.newListPeppers);
@@ -31,7 +32,7 @@ public class SchedulerPepper {
         PepperParser.currentListPeppers.forEach(pepper -> pepper.setNewPost(false));
     }
 
-    //    @Scheduled(cron = "0 */12 * * * *")
+        @Scheduled(cron = "0 */12 * * * *")
     public void removeYesterdayObjects() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         PepperParser.currentListPeppers.removeIf(pepper -> pepper.getDate().equals(yesterday));

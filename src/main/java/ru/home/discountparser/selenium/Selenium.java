@@ -20,7 +20,7 @@ public class Selenium {
     private WebDriver driver;
     @Value("${selenium.headless.mode}")
     private boolean headlessMode;
-    private int timeoutInSeconds = 60;
+    private int timeoutInSeconds = 30;
     private int dimensionWidth = 1600;
     private int dimensionHeight = 1200;
 

@@ -31,6 +31,9 @@
                 <configuration>
                     <fork>true</fork>
                     <mainClass>ru.home.discountparser.DiscountParserApplication</mainClass>
+                    <profiles>
+                        <profile>prod</profile>
+                    </profiles>
                 </configuration>
                 <executions>
                     <execution>
@@ -42,7 +45,6 @@
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
 
 <!--        <dependency>-->

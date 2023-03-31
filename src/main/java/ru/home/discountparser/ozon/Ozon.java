@@ -1,7 +1,6 @@
 package ru.home.discountparser.ozon;
 
 import java.io.File;
-import java.util.Objects;
 
 import lombok.*;
 import org.springframework.context.annotation.Scope;

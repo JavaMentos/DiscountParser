@@ -4,14 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.home.discountparser.scheduler.SchedulerPepper;
-import ru.home.discountparser.selenium.Selenium;
+import ru.home.discountparser.telegram.botcommand.*;
+import ru.home.discountparser.telegram.message.IncomingMessageProcessing;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.function.Consumer;
 
 @Component
 public class TelegramServiceImpl extends TelegramLongPollingBot implements TelegramService {
@@ -23,12 +27,24 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
     private String token;
     @Value("${chat.id}")
     private String chatId;
-
+    @Value("${user.id}")
+    private String userId;
     @Autowired
-    SchedulerPepper schedulerPepper;
+    private IncomingMessageProcessing imp;
 
-    @Autowired
-    private Selenium selenium;
+    private HashMap<String, Consumer<Message>> commandMap = new HashMap<>();
+
+    public TelegramServiceImpl(TestCommand testCommand
+            , GetChatId getChatId
+            , GetCollectionUrlOzon getCollectionUrlOzon
+            , AddUrlOzon addUrlOzon
+            , ClearCollectionOzon clearCollectionOzon) {
+        commandMap.put("/testcommand", testCommand);
+        commandMap.put("/getchatid", getChatId);
+        commandMap.put("/getcollectionozon", getCollectionUrlOzon);
+        commandMap.put("/addurlozon", addUrlOzon);
+        commandMap.put("/clearcollectionozon", clearCollectionOzon);
+    }
 
     @Override
     public String getBotUsername() {
@@ -43,7 +59,30 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
     @Override
     public void onUpdateReceived(Update update) {
 
+        Message message = update.getMessage();
 
+        if (update.hasMessage()) {
+
+            if (message.hasText()) {
+
+                String currentChatId = message.getChatId().toString();
+                String currentUserId = message.getFrom().getId().toString();
+
+                if (currentChatId.equals(chatId) & currentUserId.equals(userId)) {
+
+                    String textHasMessage = message.getText().replace(getBotUsername(), "");
+
+                    Consumer<Message> messageConsumer = commandMap.get(textHasMessage);
+
+                    if (messageConsumer != null) {
+                        messageConsumer.accept(message);
+                        return;
+                    }
+
+                    imp.messageProcessing(message);
+                }
+            }
+        }
     }
 
     public void sendMessageTextAndPhoto(String text, String imageUrl) {
@@ -73,6 +112,19 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
         } catch (TelegramApiException e) {
             e.printStackTrace();
 
+        }
+    }
+
+    public void sendMessageText(String text) {
+        try {
+            execute(SendMessage.builder()
+                    .chatId(chatId)
+                    .parseMode(parseMode)
+                    .text(text)
+                    .build()
+            );
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 }
