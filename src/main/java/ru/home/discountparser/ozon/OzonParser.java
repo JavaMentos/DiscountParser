@@ -7,103 +7,75 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.openqa.selenium.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.home.discountparser.selenium.Selenium;
+import ru.home.discountparser.selenium.SeleniumHelper;
 
+/**
+ * Класс OzonParser отвечает за проверку наличия товаров на сайте Ozon
+ * с использованием Selenium.
+ */
 @Component
 public class OzonParser {
-    public static CopyOnWriteArrayList<Ozon> listOzons = new CopyOnWriteArrayList<>();
+    public static CopyOnWriteArrayList<Ozon> ozonProducts = new CopyOnWriteArrayList<>();
     @Autowired
-    private Selenium selenium;
+    private SeleniumHelper seleniumHelper;
 
-    static {
-        Ozon ozon = new Ozon();
-        ozon.setUrlGoods("https://www.ozon.ru/product/samokat-detskiy-mid-5-s-ruchnym-tormozom-i-podveskoy-oxelo-h-decathlon-910251634/?oos_search=false&sh=I15BOSDFqg");
-        listOzons.add(ozon);
-
-        Ozon ozon1 = new Ozon();
-        ozon1.setUrlGoods("https://www.ozon.ru/product/shlem-bokserskiy-900-otkrytyy-dlya-vzroslyh-outshock-h-decathlon-chernyy-179523469/?oos_search=false&sh=I15BORL6kA");
-        listOzons.add(ozon1);
-
-        Ozon ozon2 = new Ozon();
-        ozon2.setUrlGoods("https://www.ozon.ru/product/samokat-detskiy-mid-5-s-ruchnym-tormozom-i-podveskoy-oxelo-h-decathlon-910251634/?oos_search=false&sh=I15BOSDFqg");
-        listOzons.add(ozon2);
-
-        Ozon ozon3 = new Ozon();
-        ozon3.setUrlGoods("https://www.ozon.ru/product/trenazher-dlya-doma-900-corength-decathlon-639989756/?oos_search=false&sh=I15BOVswUg");
-        listOzons.add(ozon3);
-
-        Ozon ozon4 = new Ozon();
-        ozon3.setUrlGoods("https://www.ozon.ru/product/silovaya-stantsiya-training-station-900-domyos-h-decathlon-172946373/?oos_search=false&sh=I15BOYe1DQ");
-        listOzons.add(ozon4);
-
-        Ozon ozon5 = new Ozon();
-        ozon3.setUrlGoods("https://www.ozon.ru/product/kruizer-cherno-zelenyy-yamba-900-oxelo-h-decathlon-179049667/?oos_search=false&sh=I15BOZeJZw");
-        listOzons.add(ozon5);
-
-        Ozon ozon6 = new Ozon();
-        ozon3.setUrlGoods("https://www.ozon.ru/product/kruizer-cherno-zelenyy-yamba-900-oxelo-h-decathlon-179049667/?oos_search=false&sh=I15BOZeJZw");
-        listOzons.add(ozon6);
-
-        Ozon ozon7 = new Ozon();
-        ozon3.setUrlGoods("https://www.ozon.ru/product/grusha-bokserskaya-i-perchatki-detskie-4-untsii-outshock-h-decathlon-175261325/?oos_search=false&sh=I15BORk8Dw");
-        listOzons.add(ozon7);
-
-        Ozon ozon8 = new Ozon();
-        ozon3.setUrlGoods("https://www.ozon.ru/product/stepper-ms500-domyos-h-decathlon-185621697/?oos_search=false&sh=I15BOZK8tQ");
-        listOzons.add(ozon8);
-
-        Ozon ozon9 = new Ozon();
-        ozon3.setUrlGoods("https://www.ozon.ru/product/pedali-dlya-gornogo-velosipeda-free-ride-alyuminievye-rockrider-h-dekatlon-175089029/?oos_search=false&sh=I15BOekxEA");
-        listOzons.add(ozon9);
-    }
-
+    /**
+     * Проверяет наличие товаров на сайте Ozon и сохраняет состояние наличия
+     * и скриншоты для товаров, которые стали доступными.
+     */
     public void checkAvailabilityOfGoods() {
-        if(OzonParser.listOzons.size() == 0) return;
+        if (OzonParser.ozonProducts.size() == 0) return;
 
-        Iterator<Ozon> iterator = OzonParser.listOzons.iterator();
+        Iterator<Ozon> iterator = OzonParser.ozonProducts.iterator();
         while (iterator.hasNext()) {
-
-            selenium.runSelenium();
+            seleniumHelper.runSelenium();
 
             Ozon ozon = iterator.next();
 
-            selenium.insertUrlInDriver(ozon.getUrlGoods());
+            seleniumHelper.navigate(ozon.getProductUrl());
 
-            selenium.timeUnitSleep(5);
+            seleniumHelper.sleep(5);
 
-            boolean AvailableGoods = isGoodsUnavailable();
+            boolean isProductAvailable = isProductUnavailable();
 
-            if (AvailableGoods) {
-                File file = takeScreenshot();
-                if (file != null) {
-                    ozon.setScreenShot(file);
-                    ozon.setGoodsAvailable(true);
+            if (isProductAvailable) {
+                File screenshot = takeScreenshot();
+                if (screenshot != null) {
+                    ozon.setScreenShot(screenshot);
+                    ozon.setAvailable(true);
                 }
             }
-            selenium.terminateSelenium();
+            seleniumHelper.terminateSelenium();
         }
-
     }
 
-    private boolean isGoodsUnavailable() {
+    /**
+     * Проверяет, закончился ли товар на сайте Ozon.
+     *
+     * @return true, если товар доступен; false, если товар закончился
+     */
+    private boolean isProductUnavailable() {
         try {
-//            selenium.getElementByClassName("zm9");
-            selenium.getElementByXpath("//h2[1][contains(text(),'Этот товар закончился')]");
+            // Поиск элемента, который отображается, когда товар закончился
+            seleniumHelper.getElementByXpath("//h2[1][contains(text(),'Этот товар закончился')]");
             return false;
         } catch (NoSuchElementException e) {
             return true;
         }
-
     }
 
+    /**
+     * Делает скриншот элемента товара на сайте Ozon.
+     *
+     * @return файл скриншота или null, если скриншот не может быть сделан
+     */
     private File takeScreenshot() {
         try {
-            WebElement element = selenium.getElementByXpath("//div[1][@data-widget='stickyContainer']");
-//            WebElement element = selenium.getElementByXpath("//*[@id='layoutPage']/div[1]/div[4]/div[3]/div[1]/div[1]/div[1]/div/div[2]");
-//            WebElement element = selenium.getElementByXpath("//*[@id='layoutPage']/div[1]/div[5]/div[3]/div[1]/div[1]/div[1]/div/div[2]/div/div[1]/div[1]/div/img");
+            // Поиск элемента товара для создания скриншота
+            WebElement element = seleniumHelper.getElementByXpath("//div[1][@data-widget='stickyContainer']");
             return element.getScreenshotAs(OutputType.FILE);
         } catch (TimeoutException | NoSuchElementException e) {
-            selenium.terminateSelenium();
+            seleniumHelper.terminateSelenium();
             return null;
         }
     }

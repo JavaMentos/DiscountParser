@@ -6,16 +6,16 @@ import lombok.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+/**
+ * Класс Ozon представляет товар на сайте Ozon с информацией о наличии,
+ * URL товара и скриншотом.
+ */
+@Data
 @Component
-@Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@ToString
 @Scope("prototype")
 public class Ozon {
-    private String urlGoods;
+    private String productUrl;
     private File screenShot;
-    private boolean goodsAvailable = false;
+    private boolean isAvailable = false;
 }

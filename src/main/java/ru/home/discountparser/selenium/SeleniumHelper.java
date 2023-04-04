@@ -13,8 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Класс-помощник для работы с Selenium WebDriver. Предоставляет методы для
+ * инициализации и управления WebDriver, а также для взаимодействия с элементами
+ * на странице.
+ */
 @Component
-public class Selenium {
+public class SeleniumHelper {
 
     private ChromeOptions options;
     private WebDriver driver;
@@ -24,6 +29,9 @@ public class Selenium {
     private int dimensionWidth = 1600;
     private int dimensionHeight = 1200;
 
+    /**
+     * Инициализирует и запускает WebDriver с заданными параметрами.
+     */
     public void runSelenium() {
         WebDriverManager.chromedriver().setup();
         options = new ChromeOptions();
@@ -47,29 +55,53 @@ public class Selenium {
 
         driver = new ChromeDriver(options);
 
-        //разрешение окна
+        // Установка размера окна
         Dimension dim = new Dimension(dimensionWidth, dimensionHeight);
-
         driver.manage().window().setSize(dim);
     }
 
-    public void insertUrlInDriver(String url) {
+    /**
+     * Переходит на указанный URL.
+     *
+     * @param url адрес страницы для перехода.
+     */
+    public void navigate(String url) {
         driver.get(url);
     }
 
+    /**
+     * Получает элемент на странице по XPath.
+     *
+     * @param xpath XPath-выражение для поиска элемента.
+     * @return найденный элемент на странице.
+     */
     public WebElement getElementByXpath(String xpath) {
         return driver.findElement(By.xpath(xpath));
     }
 
+    /**
+     * Получает элемент на странице по имени класса.
+     *
+     * @param className имя класса элемента для поиска.
+     * @return найденный элемент на странице.
+     */
     public WebElement getElementByClassName(String className) {
         return driver.findElement(By.className(className));
     }
 
+    /**
+     * Завершает работу WebDriver.
+     */
     public void terminateSelenium() {
         driver.quit();
     }
 
-    public void timeUnitSleep(int second) {
+    /**
+     * Задерживает выполнение текущего потока на указанное количество секунд.
+     *
+     * @param seconds количество секунд для задержки.
+     */
+    public void sleep(int second) {
         try {
             TimeUnit.SECONDS.sleep(second);
         } catch (InterruptedException e) {

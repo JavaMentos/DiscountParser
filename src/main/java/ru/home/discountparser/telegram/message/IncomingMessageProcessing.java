@@ -6,9 +6,12 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.discountparser.ozon.Ozon;
 import ru.home.discountparser.ozon.OzonParser;
-import ru.home.discountparser.telegram.TelegramServiceImpl;
+import ru.home.discountparser.telegram.TelegramService;
 import ru.home.discountparser.telegram.botState.TelegramBotState;
 
+/**
+ * Класс IncomingMessageProcessing обрабатывает входящие сообщения от пользователей.
+ */
 @Component
 public class IncomingMessageProcessing {
 
@@ -16,23 +19,27 @@ public class IncomingMessageProcessing {
     private TelegramBotState botState;
     @Autowired
     @Lazy
-    private TelegramServiceImpl telegram;
+    private TelegramService telegramService;
 
-    public void messageProcessing(Message message) {
+    /**
+     * Обрабатывает входящие сообщения в соответствии с текущим состоянием бота.
+     *
+     * @param message входящее сообщение от пользователя
+     */
+    public void processMessage(Message message) {
 
-        String textHasMessage = message.getText().replace(telegram.getBotUsername(), "");
+        String messageText = message.getText().replace(telegramService.getBotUsername(), "");
 
         switch (botState.getState()) {
-
             case WAITING_URL_FOR_OZON:
-                if (!checkValidUrl(textHasMessage)) {
-                    telegram.sendMessageText("Неверный формат ссылки");
+                if (!isValidUrl(messageText)) {
+                    telegramService.sendTextMessage("Неверный формат ссылки");
                     botState.stateFree();
                     break;
                 }
 
-                addUrlOzon(textHasMessage);
-                telegram.sendMessageText("Ссылка добавлена");
+                addOzonUrl(messageText);
+                telegramService.sendTextMessage("Ссылка добавлена");
 
                 botState.stateFree();
                 break;
@@ -43,14 +50,25 @@ public class IncomingMessageProcessing {
         }
     }
 
-    private boolean checkValidUrl(String url) {
+    /**
+     * Проверяет, является ли переданный текст допустимым URL.
+     *
+     * @param url текст для проверки
+     * @return true, если текст является допустимым URL, иначе false
+     */
+    private boolean isValidUrl(String url) {
         String regex = "(http|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])";
         return url.matches(regex);
     }
 
-    private void addUrlOzon(String url) {
+    /**
+     * Добавляет URL Ozon-товара в список.
+     *
+     * @param url URL товара Ozon
+     */
+    private void addOzonUrl(String url) {
         Ozon ozon = new Ozon();
-        ozon.setUrlGoods(url);
-        OzonParser.listOzons.add(ozon);
+        ozon.setProductUrl(url);
+        OzonParser.ozonProducts.add(ozon);
     }
 }

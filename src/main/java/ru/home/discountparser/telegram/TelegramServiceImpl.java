@@ -17,6 +17,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+/**
+ * Класс TelegramServiceImpl предоставляет реализацию интерфейса TelegramService и обрабатывает входящие сообщения от Telegram-бота.
+ */
 @Component
 public class TelegramServiceImpl extends TelegramLongPollingBot implements TelegramService {
     @Value("${bot.parseMode}")
@@ -30,7 +33,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
     @Value("${user.id}")
     private String userId;
     @Autowired
-    private IncomingMessageProcessing imp;
+    private IncomingMessageProcessing messageProcessor;
 
     private HashMap<String, Consumer<Message>> commandMap = new HashMap<>();
 
@@ -58,18 +61,13 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
 
     @Override
     public void onUpdateReceived(Update update) {
-
         Message message = update.getMessage();
 
-        if (update.hasMessage()) {
-
-            if (message.hasText()) {
-
+            if (update.hasMessage() && message.hasText()) {
                 String currentChatId = message.getChatId().toString();
                 String currentUserId = message.getFrom().getId().toString();
 
                 if (currentChatId.equals(chatId) & currentUserId.equals(userId)) {
-
                     String textHasMessage = message.getText().replace(getBotUsername(), "");
 
                     Consumer<Message> messageConsumer = commandMap.get(textHasMessage);
@@ -79,13 +77,12 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
                         return;
                     }
 
-                    imp.messageProcessing(message);
+                    messageProcessor.processMessage(message);
                 }
             }
-        }
     }
 
-    public void sendMessageTextAndPhoto(String text, String imageUrl) {
+    public void sendTextWithImageUrl(String text, String imageUrl) {
         try {
             execute(SendPhoto
                     .builder()
@@ -100,11 +97,11 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
         }
     }
 
-    public void sendMessageTextAndPhoto(String text, File file) {
+    public void sendTextWithImageFile(String text, File imageFile) {
         try {
             execute(SendPhoto.builder()
                     .chatId(chatId)
-                    .photo(new InputFile(file))
+                    .photo(new InputFile(imageFile))
                     .caption(text)
                     .parseMode(parseMode)
                     .build()
@@ -115,7 +112,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
         }
     }
 
-    public void sendMessageText(String text) {
+    public void sendTextMessage(String text) {
         try {
             execute(SendMessage.builder()
                     .chatId(chatId)

@@ -18,7 +18,7 @@ public class TestCommand implements Consumer<Message> {
 
     @Override
     public void accept(Message message) {
-        String text = String.format("Размер коллекции %n" + PepperParser.currentListPeppers.size());
-        telegram.sendMessageText(text);
+        String text = String.format("Размер коллекции %n" + PepperParser.currentPepperPosts.size());
+        telegram.sendTextMessage(text);
     }
 }
