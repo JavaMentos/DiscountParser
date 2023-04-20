@@ -72,8 +72,14 @@ public class OzonParser {
     private File takeScreenshot() {
         try {
             // Поиск элемента товара для создания скриншота
-            WebElement element = seleniumHelper.getElementByXpath("//div[1][@data-widget='stickyContainer']");
-            return element.getScreenshotAs(OutputType.FILE);
+//            Web
+//            Element element = seleniumHelper.getElementByXpath("//div[1][@data-widget='stickyContainer']");
+//            return element.getScreenshotAs(OutputType.FILE);
+            // делает скриншот окна без привязки к элементу
+            WebDriver driver = seleniumHelper.getDriver();
+            return ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+
+
         } catch (TimeoutException | NoSuchElementException e) {
             seleniumHelper.terminateSelenium();
             return null;

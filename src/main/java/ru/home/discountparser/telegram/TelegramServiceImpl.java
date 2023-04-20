@@ -67,7 +67,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
                 String currentChatId = message.getChatId().toString();
                 String currentUserId = message.getFrom().getId().toString();
 
-                if (currentChatId.equals(chatId) & currentUserId.equals(userId)) {
+                if (currentChatId.equals(chatId)) {
                     String textHasMessage = message.getText().replace(getBotUsername(), "");
 
                     Consumer<Message> messageConsumer = commandMap.get(textHasMessage);

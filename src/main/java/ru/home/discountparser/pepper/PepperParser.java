@@ -48,7 +48,8 @@ public class PepperParser {
                 String productDescription
                         = element.select("a").attr("title");
                 String details
-                        = element.select("div[class=overflow--wrap-break width--all-12  size--all-s size--fromW3-m]").text();
+                        = element.select("div.overflow--wrap-break.width--all-12.size--all-s[data-handler=" +
+                        "'lightbox-xhr emoticon-preview']").text();
                 String imageUrl
                         = element.select("img").attr("src");
                 String url

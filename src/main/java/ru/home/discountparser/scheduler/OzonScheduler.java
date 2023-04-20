@@ -8,6 +8,7 @@ import ru.home.discountparser.ozon.Ozon;
 import ru.home.discountparser.ozon.OzonParser;
 import ru.home.discountparser.telegram.TelegramService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -28,18 +29,18 @@ public class OzonScheduler {
      * Запускает проверку доступности товаров на Ozon каждые 5 минут с случайной задержкой до 2 минут.
      * При наличии доступных товаров, отправляет уведомления в Telegram.
      */
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void runCheckAvailableGoodsFromOzon() {
-        int randomDelay = new Random().nextInt(2); // генерируем случайную задержку
-        System.out.println("Scheduler is running with delay of " + randomDelay + " minutes");
+        int randomDelay = new Random().nextInt(30); // генерируем случайную задержку
+        System.out.println(LocalDateTime.now() + "Scheduler is running with delay of " + randomDelay + " second");
         try {
-            TimeUnit.MINUTES.sleep(randomDelay);
+            TimeUnit.SECONDS.sleep(randomDelay);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         ozonParser.checkAvailabilityOfGoods();
-        sendMessagesForAvailableGoods(ozonParser.ozonProducts);
+        sendMessagesForAvailableGoods(OzonParser.ozonProducts);
         removeProcessedOzonItems();
     }
 

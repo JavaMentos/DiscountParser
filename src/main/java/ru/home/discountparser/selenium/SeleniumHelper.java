@@ -6,7 +6,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -18,16 +18,20 @@ import java.util.concurrent.TimeUnit;
  * инициализации и управления WebDriver, а также для взаимодействия с элементами
  * на странице.
  */
-@Component
+@Service
 public class SeleniumHelper {
 
     private ChromeOptions options;
     private WebDriver driver;
     @Value("${selenium.headless.mode}")
     private boolean headlessMode;
-    private int timeoutInSeconds = 30;
-    private int dimensionWidth = 1600;
-    private int dimensionHeight = 1200;
+    private final int timeoutInSeconds = 10;
+    private final int dimensionWidth = 1600;
+    private final int dimensionHeight = 1200;
+
+    public WebDriver getDriver() {
+        return driver;
+    }
 
     /**
      * Инициализирует и запускает WebDriver с заданными параметрами.
@@ -99,7 +103,7 @@ public class SeleniumHelper {
     /**
      * Задерживает выполнение текущего потока на указанное количество секунд.
      *
-     * @param seconds количество секунд для задержки.
+     * @param second количество секунд для задержки.
      */
     public void sleep(int second) {
         try {
