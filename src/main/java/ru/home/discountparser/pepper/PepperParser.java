@@ -2,8 +2,10 @@ package ru.home.discountparser.pepper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,19 +13,21 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
+import ru.home.discountparser.pepper.dto.Pepper;
+
+import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPosts;
+import static ru.home.discountparser.pepper.PepperListContainer.newPepperPosts;
 
 /**
  * Класс PepperParser отслеживает новые скидки на товары на сайте pepper.ru.
  * Он оповещает об определенных скидках и товарах на основе заданных параметров.
  */
 @Component
+@Log4j2
 public class PepperParser {
-
-    public static CopyOnWriteArrayList<Pepper> newPepperPosts = new CopyOnWriteArrayList<>();
-    public static CopyOnWriteArrayList<Pepper> currentPepperPosts = new CopyOnWriteArrayList<>();
     private final String pepperUrl = "https://www.pepper.ru/new";
     private final double alertingPricePercentage = 30;
-    private final String alertKeyword = "ноутбук";
+    private final List<String> alertKeywords = List.of("ноутбук");
 
     /**
      * Метод проверяет новые публикации на сайте и добавляет их в список новых публикаций
@@ -47,15 +51,16 @@ public class PepperParser {
                         = element.select("span[class=space--ml-1 size--all-l size--fromW3-xl]").text();
                 String productDescription
                         = element.select("a").attr("title");
+
                 String details
                         = element.select("div.overflow--wrap-break.width--all-12.size--all-s[data-handler=" +
                         "'lightbox-xhr emoticon-preview']").text();
                 String imageUrl
                         = element.select("img").attr("src");
-                String url
-                        = element.select("a").attr("href");
 
-                if (productDescription.equalsIgnoreCase(alertKeyword)) {
+                String url = element.parentNode().attributes().get("id").replace("thread_", "");
+
+                if (alertKeywords.contains(productDescription)) {
                     Pepper newPepperPost = createNewPepperPost(oldPriceString,
                             newPriceString,
                             discountPercentage,
@@ -88,7 +93,7 @@ public class PepperParser {
                 }
             }
         } catch (IOException e) {
-            System.out.println(LocalDateTime.now() + " PepperParser");
+                 log.error(e.getMessage(),e);
         }
 
     }
@@ -158,6 +163,6 @@ public class PepperParser {
                 + "Старая цена <s>" + pepper.getOldPrice() + "</s>\n"
                 + "Новая цена <b>" + pepper.getNewPrice() + "</b>\n\n"
                 + "Описание:\n<i>" + pepper.getDetails() + "</i>\n\n"
-                + "Ссылка на товар\n" + pepper.getUrl();
+                + "<a href=\"https://www.pepper.ru/visit/homenew/" + pepper.getUrl()+"\">ссылка на товар</a>";
     }
 }

@@ -1,13 +1,15 @@
-package ru.home.discountparser.telegram.message;
+package ru.home.discountparser.telegram.message.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.ozon.Ozon;
+import ru.home.discountparser.ozon.dto.Ozon;
 import ru.home.discountparser.ozon.OzonParser;
 import ru.home.discountparser.telegram.TelegramService;
-import ru.home.discountparser.telegram.botState.TelegramBotState;
+import ru.home.discountparser.telegram.state.TelegramBotState;
+
+import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс IncomingMessageProcessing обрабатывает входящие сообщения от пользователей.
@@ -17,6 +19,7 @@ public class IncomingMessageProcessing {
 
     @Autowired
     private TelegramBotState botState;
+
     @Autowired
     @Lazy
     private TelegramService telegramService;
@@ -69,6 +72,6 @@ public class IncomingMessageProcessing {
     private void addOzonUrl(String url) {
         Ozon ozon = new Ozon();
         ozon.setProductUrl(url);
-        OzonParser.ozonProducts.add(ozon);
+        ozonProducts.add(ozon);
     }
 }

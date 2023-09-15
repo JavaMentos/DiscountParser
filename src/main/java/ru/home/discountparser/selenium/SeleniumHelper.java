@@ -1,6 +1,7 @@
 package ru.home.discountparser.selenium;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  * на странице.
  */
 @Service
+@Log4j2
 public class SeleniumHelper {
 
     private ChromeOptions options;
@@ -109,7 +111,7 @@ public class SeleniumHelper {
         try {
             TimeUnit.SECONDS.sleep(second);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage(),e);
         }
     }
 }

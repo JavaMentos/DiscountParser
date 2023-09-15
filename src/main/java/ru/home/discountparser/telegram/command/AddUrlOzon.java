@@ -1,11 +1,10 @@
-package ru.home.discountparser.telegram.botcommand;
+package ru.home.discountparser.telegram.command;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.telegram.TelegramService;
-import ru.home.discountparser.telegram.botState.TelegramBotState;
+import ru.home.discountparser.telegram.message.TelegramMessageSender;
+import ru.home.discountparser.telegram.state.TelegramBotState;
 
 import java.util.function.Consumer;
 
@@ -14,12 +13,10 @@ import java.util.function.Consumer;
  * Реализует интерфейс Consumer для обработки сообщений.
  */
 @Component
+@AllArgsConstructor
 public class AddUrlOzon implements Consumer<Message> {
 
-    @Autowired
-    @Lazy
-    private TelegramService telegramService;
-    @Autowired
+    private TelegramMessageSender telegramMessageSender;
     private TelegramBotState botState;
 
     /**
@@ -30,8 +27,8 @@ public class AddUrlOzon implements Consumer<Message> {
     @Override
     public void accept(Message message) {
         String response = "Ожидаю ссылку на товар";
-        telegramService.sendTextMessage(response);
+        telegramMessageSender.sendTextMessage(response);
 
-        botState.changeActivityState(message.getText().replace(telegramService.getBotUsername(), ""));
+        botState.changeActivityState(message.getText());
     }
 }

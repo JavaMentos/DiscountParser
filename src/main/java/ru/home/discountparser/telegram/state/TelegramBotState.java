@@ -1,4 +1,4 @@
-package ru.home.discountparser.telegram.botState;
+package ru.home.discountparser.telegram.state;
 
 import org.springframework.stereotype.Component;
 

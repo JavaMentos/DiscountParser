@@ -1,28 +1,35 @@
 package ru.home.discountparser.scheduler;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import ru.home.discountparser.pepper.Pepper;
 import ru.home.discountparser.pepper.PepperParser;
+import ru.home.discountparser.pepper.dto.Pepper;
 import ru.home.discountparser.telegram.TelegramService;
+import ru.home.discountparser.telegram.message.TelegramMessageSender;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPosts;
+import static ru.home.discountparser.pepper.PepperListContainer.newPepperPosts;
 
 /**
  * Класс PepperScheduler отвечает за проверку новых публикаций на Pepper
  * и отправку уведомлений о новых публикациях через сервис Telegram.
  */
 @Component
+@Log4j2
+@AllArgsConstructor
 public class PepperScheduler {
-    @Autowired
-    @Lazy
-    private TelegramService telegramService;
-    @Autowired
-    private PepperParser pepperParser;
+
+    private final TelegramMessageSender telegramMessageSender;
+
+    private final PepperParser pepperParser;
 
     /**
      * Запускает проверку новых публикаций на Pepper с заданным интервалом из конфигурации.
@@ -30,10 +37,11 @@ public class PepperScheduler {
      */
     @Scheduled(initialDelayString = "${schedule.pepper.init}", fixedDelayString = "${schedule.pepper.work}")
     public void checkNewPostsFromPepper() {
+        log.info(LocalDateTime.now() + " Стартовал планировщик по пеппер");
         pepperParser.checkNewPosts();
-        PepperParser.currentPepperPosts.addAll(PepperParser.newPepperPosts);
-        sendMessagesForNewPepperPosts(PepperParser.currentPepperPosts);
-        PepperParser.currentPepperPosts.forEach(pepperPost -> pepperPost.setIsNew(false));
+        currentPepperPosts.addAll(newPepperPosts);
+        sendMessagesForNewPepperPosts(currentPepperPosts);
+        currentPepperPosts.forEach(pepperPost -> pepperPost.setIsNew(false));
     }
 
     /**
@@ -41,8 +49,11 @@ public class PepperScheduler {
      */
     @Scheduled(cron = "0 */12 * * * *")
     public void removeYesterdayPosts() {
+        log.info("Стартовал планировщик и очистил список постов, current "
+                + currentPepperPosts.size() + " new " + newPepperPosts.size());
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        PepperParser.currentPepperPosts.removeIf(pepperPost -> pepperPost.getDate().equals(yesterday));
+        currentPepperPosts.removeIf(pepperPost -> pepperPost.getDate().equals(yesterday));
+        newPepperPosts.clear();
     }
 
     /**
@@ -53,7 +64,7 @@ public class PepperScheduler {
     private void sendMessagesForNewPepperPosts(List<Pepper> pepperPosts) {
         pepperPosts.stream()
                 .filter(Pepper::isNew)
-                .forEach(pepperPost -> telegramService.sendTextWithImageUrl(
+                .forEach(pepperPost -> telegramMessageSender.sendTextWithImageUrl(
                         pepperParser.formatPepperPostMessage(pepperPost), pepperPost.getImageUrl())
                 );
     }

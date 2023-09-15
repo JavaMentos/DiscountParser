@@ -1,36 +1,36 @@
 package ru.home.discountparser.ozon;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.home.discountparser.ozon.dto.Ozon;
 import ru.home.discountparser.selenium.SeleniumHelper;
+
+import java.io.File;
+
+import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс OzonParser отвечает за проверку наличия товаров на сайте Ozon
  * с использованием Selenium.
  */
 @Component
+@RequiredArgsConstructor
 public class OzonParser {
-    public static CopyOnWriteArrayList<Ozon> ozonProducts = new CopyOnWriteArrayList<>();
-    @Autowired
-    private SeleniumHelper seleniumHelper;
+
+    private final SeleniumHelper seleniumHelper;
 
     /**
      * Проверяет наличие товаров на сайте Ozon и сохраняет состояние наличия
      * и скриншоты для товаров, которые стали доступными.
      */
     public void checkAvailabilityOfGoods() {
-        if (OzonParser.ozonProducts.size() == 0) return;
+        if (ozonProducts.size() == 0) return;
 
-        Iterator<Ozon> iterator = OzonParser.ozonProducts.iterator();
-        while (iterator.hasNext()) {
+        for (Ozon ozonProduct : ozonProducts) {
             seleniumHelper.runSelenium();
 
-            Ozon ozon = iterator.next();
+            Ozon ozon = ozonProduct;
 
             seleniumHelper.navigate(ozon.getProductUrl());
 
@@ -77,7 +77,7 @@ public class OzonParser {
 //            return element.getScreenshotAs(OutputType.FILE);
             // делает скриншот окна без привязки к элементу
             WebDriver driver = seleniumHelper.getDriver();
-            return ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            return ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
 
         } catch (TimeoutException | NoSuchElementException e) {

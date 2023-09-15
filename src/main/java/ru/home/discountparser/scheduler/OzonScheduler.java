@@ -1,29 +1,33 @@
 package ru.home.discountparser.scheduler;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.home.discountparser.ozon.Ozon;
 import ru.home.discountparser.ozon.OzonParser;
+import ru.home.discountparser.ozon.dto.Ozon;
 import ru.home.discountparser.telegram.TelegramService;
+import ru.home.discountparser.telegram.message.TelegramMessageSender;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс SchedulerOzon отвечает за проверку доступности товаров на Ozon
  * и отправку уведомлений о доступности товаров через сервис Telegram.
  */
 @Component
+@Log4j2
+@AllArgsConstructor
 public class OzonScheduler {
-    @Autowired
-    private OzonParser ozonParser;
-    @Autowired
-    @Lazy
-    private TelegramService telegramService;
+
+    private final  OzonParser ozonParser;
+    private final TelegramMessageSender telegramMessageSender;
 
     /**
      * Запускает проверку доступности товаров на Ozon каждые 5 минут с случайной задержкой до 2 минут.
@@ -31,35 +35,25 @@ public class OzonScheduler {
      */
     @Scheduled(cron = "0 */1 * * * ?")
     public void runCheckAvailableGoodsFromOzon() {
-        int randomDelay = new Random().nextInt(30); // генерируем случайную задержку
-        System.out.println(LocalDateTime.now() + "Scheduler is running with delay of " + randomDelay + " second");
+        // генерируем случайную задержку для натруальной имитации пользователя
+        int randomDelay = new Random().nextInt(30);
+        log.info(LocalDateTime.now() + " Стартовал планировщик по озону");
         try {
             TimeUnit.SECONDS.sleep(randomDelay);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
 
         ozonParser.checkAvailabilityOfGoods();
-        sendMessagesForAvailableGoods(OzonParser.ozonProducts);
+        telegramMessageSender.sendMessagesForOzon(ozonProducts);
         removeProcessedOzonItems();
     }
 
-    /**
-     * Отправляет сообщения через сервис Telegram о наличии товаров на Ozon.
-     *
-     * @param availableOzonItemPosts список объектов Ozon для проверки наличия и отправки уведомлений
-     */
-    private void sendMessagesForAvailableGoods(List<Ozon> availableOzonItemPosts) {
-        availableOzonItemPosts.stream().filter(Ozon::isAvailable).forEach(ozon ->
-                telegramService.sendTextWithImageFile(
-                        String.format("Товар появился в наличии \n\n %s", ozon.getProductUrl()), ozon.getScreenShot())
-        );
-    }
 
     /**
      * Удаляет товары, доступность которых уже была проверена и уведомления отправлены.
      */
-    private void removeProcessedOzonItems(){
-        OzonParser.ozonProducts.removeIf(Ozon::isAvailable);
+    private void removeProcessedOzonItems() {
+        ozonProducts.removeIf(Ozon::isAvailable);
     }
 }

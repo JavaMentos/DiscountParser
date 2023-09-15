@@ -1,4 +1,4 @@
-package ru.home.discountparser.pepper;
+package ru.home.discountparser.pepper.dto;
 
 import java.time.LocalDate;
 

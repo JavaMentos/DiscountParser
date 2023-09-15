@@ -1,24 +1,22 @@
-package ru.home.discountparser.telegram.botcommand;
+package ru.home.discountparser.telegram.command;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.ozon.OzonParser;
-import ru.home.discountparser.telegram.TelegramService;
+import ru.home.discountparser.telegram.message.TelegramMessageSender;
 
 import java.util.function.Consumer;
+
+import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс-компонент, обрабатывающий очистку коллекции товаров Ozon.
  * Реализует интерфейс Consumer для обработки сообщений.
  */
 @Component
+@AllArgsConstructor
 public class ClearCollectionOzon implements Consumer<Message> {
-
-    @Autowired
-    @Lazy
-    private TelegramService telegramService;
+    private TelegramMessageSender telegramMessageSender;
 
     /**
      * Обрабатывает сообщение с запросом на очистку коллекции товаров Ozon.
@@ -28,7 +26,7 @@ public class ClearCollectionOzon implements Consumer<Message> {
     @Override
     public void accept(Message message) {
 
-        OzonParser.ozonProducts.clear();
-        telegramService.sendTextMessage("Коллекция очищена");
+        ozonProducts.clear();
+        telegramMessageSender.sendTextMessage("Коллекция очищена");
     }
 }

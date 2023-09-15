@@ -1,21 +1,11 @@
-package ru.home.discountparser.telegram;
+package ru.home.discountparser.telegram.message;
 
 import ru.home.discountparser.ozon.dto.Ozon;
 
 import java.io.File;
 import java.util.List;
 
-/**
- * Интерфейс TelegramService предоставляет методы для отправки сообщений через Telegram-бота.
- */
-public interface TelegramService {
-
-    /**
-     * Возвращает имя бота.
-     *
-     * @return имя бота
-     */
-    String getBotUsername();
+public interface TelegramMessageSender {
 
     /**
      * Отправляет сообщения через сервис Telegram о наличии товаров на Ozon.

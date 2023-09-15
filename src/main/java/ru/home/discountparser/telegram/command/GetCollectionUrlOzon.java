@@ -1,24 +1,23 @@
-package ru.home.discountparser.telegram.botcommand;
+package ru.home.discountparser.telegram.command;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.ozon.OzonParser;
-import ru.home.discountparser.telegram.TelegramService;
+import ru.home.discountparser.telegram.message.TelegramMessageSender;
 
 import java.util.function.Consumer;
+
+import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс GetCollectionUrlOzon обрабатывает полученное сообщение и отправляет коллекцию ссылок на продукты с Ozon.
  * Реализует интерфейс Consumer<Message>.
  */
 @Component
+@AllArgsConstructor
 public class GetCollectionUrlOzon implements Consumer<Message> {
 
-    @Autowired
-    @Lazy
-    private TelegramService telegramService;
+    private TelegramMessageSender telegramMessageSender;
 
     /**
      * Обрабатывает полученное сообщение и отправляет коллекцию ссылок на продукты с Ozon.
@@ -27,7 +26,7 @@ public class GetCollectionUrlOzon implements Consumer<Message> {
      */
     @Override
     public void accept(Message message) {
-        telegramService.sendTextMessage(formatOzonUrlList());
+        telegramMessageSender.sendTextMessage(formatOzonUrlList());
     }
 
     /**
@@ -38,15 +37,14 @@ public class GetCollectionUrlOzon implements Consumer<Message> {
     private String formatOzonUrlList() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Всего ссылок: ")
-                .append(OzonParser.ozonProducts.size())
+                .append(ozonProducts.size())
                 .append(" - https://www.ozon.ru")
                 .append("\n\n");
 
-        OzonParser.ozonProducts.forEach(ozon ->
-            stringBuilder.append(ozon.getProductUrl())
-                    .append("\n\n")
+        ozonProducts.forEach(ozon ->
+                stringBuilder.append(ozon.getProductUrl())
+                        .append("\n\n")
         );
-
         return stringBuilder.toString();
     }
 }
