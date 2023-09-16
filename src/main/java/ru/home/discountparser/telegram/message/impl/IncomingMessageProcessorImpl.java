@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.discountparser.ozon.dto.Ozon;
-import ru.home.discountparser.ozon.OzonParser;
 import ru.home.discountparser.telegram.TelegramService;
+import ru.home.discountparser.telegram.message.MessageSender;
 import ru.home.discountparser.telegram.state.TelegramBotState;
 
 import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
@@ -15,34 +15,29 @@ import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
  * Класс IncomingMessageProcessing обрабатывает входящие сообщения от пользователей.
  */
 @Component
-public class IncomingMessageProcessing {
+public class IncomingMessageProcessorImpl {
 
     @Autowired
     private TelegramBotState botState;
 
     @Autowired
     @Lazy
-    private TelegramService telegramService;
+    private MessageSender messageSender;
 
-    /**
-     * Обрабатывает входящие сообщения в соответствии с текущим состоянием бота.
-     *
-     * @param message входящее сообщение от пользователя
-     */
     public void processMessage(Message message) {
 
-        String messageText = message.getText().replace(telegramService.getBotUsername(), "");
+        String messageText = message.getText();
 
         switch (botState.getState()) {
             case WAITING_URL_FOR_OZON:
                 if (!isValidUrl(messageText)) {
-                    telegramService.sendTextMessage("Неверный формат ссылки");
+                    messageSender.prepareMessageWithText("Неверный формат ссылки");
                     botState.stateFree();
                     break;
                 }
 
                 addOzonUrl(messageText);
-                telegramService.sendTextMessage("Ссылка добавлена");
+                messageSender.prepareMessageWithText("Ссылка добавлена");
 
                 botState.stateFree();
                 break;
@@ -53,22 +48,11 @@ public class IncomingMessageProcessing {
         }
     }
 
-    /**
-     * Проверяет, является ли переданный текст допустимым URL.
-     *
-     * @param url текст для проверки
-     * @return true, если текст является допустимым URL, иначе false
-     */
     private boolean isValidUrl(String url) {
         String regex = "(http|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])";
         return url.matches(regex);
     }
 
-    /**
-     * Добавляет URL Ozon-товара в список.
-     *
-     * @param url URL товара Ozon
-     */
     private void addOzonUrl(String url) {
         Ozon ozon = new Ozon();
         ozon.setProductUrl(url);

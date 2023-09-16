@@ -22,7 +22,7 @@ public interface TelegramService {
      *
      * @param availableOzonItemPosts список объектов Ozon для проверки наличия и отправки уведомлений
      */
-    void sendMessagesForOzon(List<Ozon> availableOzonItemPosts);
+//    void sendMessagesForOzon(List<Ozon> availableOzonItemPosts);
 
     /**
      * Отправляет текстовое сообщение и изображение по URL.
@@ -38,7 +38,7 @@ public interface TelegramService {
      * @param text     текст сообщения
      * @param imageFile файл изображения
      */
-    void sendTextWithImageFile(String text, File imageFile);
+    void sendMessageWithImage(String text, File imageFile);
 
     /**
      * Отправляет текстовое сообщение.

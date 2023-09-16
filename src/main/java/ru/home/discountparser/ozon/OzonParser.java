@@ -25,7 +25,7 @@ public class OzonParser {
      * и скриншоты для товаров, которые стали доступными.
      */
     public void checkAvailabilityOfGoods() {
-        if (ozonProducts.size() == 0) return;
+        if (ozonProducts.isEmpty()) return;
 
         for (Ozon ozonProduct : ozonProducts) {
             seleniumHelper.runSelenium();

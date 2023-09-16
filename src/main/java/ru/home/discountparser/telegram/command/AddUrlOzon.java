@@ -3,7 +3,7 @@ package ru.home.discountparser.telegram.command;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.telegram.message.TelegramMessageSender;
+import ru.home.discountparser.telegram.message.MessageSender;
 import ru.home.discountparser.telegram.state.TelegramBotState;
 
 import java.util.function.Consumer;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 @AllArgsConstructor
 public class AddUrlOzon implements Consumer<Message> {
 
-    private TelegramMessageSender telegramMessageSender;
+    private MessageSender telegramMessageSender;
     private TelegramBotState botState;
 
     /**
@@ -27,7 +27,7 @@ public class AddUrlOzon implements Consumer<Message> {
     @Override
     public void accept(Message message) {
         String response = "Ожидаю ссылку на товар";
-        telegramMessageSender.sendTextMessage(response);
+        telegramMessageSender.prepareMessageWithText(response);
 
         botState.changeActivityState(message.getText());
     }

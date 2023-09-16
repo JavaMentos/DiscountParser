@@ -3,7 +3,7 @@ package ru.home.discountparser.telegram.command;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.telegram.message.TelegramMessageSender;
+import ru.home.discountparser.telegram.message.MessageSender;
 
 import java.util.function.Consumer;
 
@@ -16,7 +16,7 @@ import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
 @Component
 @AllArgsConstructor
 public class ClearCollectionOzon implements Consumer<Message> {
-    private TelegramMessageSender telegramMessageSender;
+    private MessageSender telegramMessageSender;
 
     /**
      * Обрабатывает сообщение с запросом на очистку коллекции товаров Ozon.
@@ -27,6 +27,6 @@ public class ClearCollectionOzon implements Consumer<Message> {
     public void accept(Message message) {
 
         ozonProducts.clear();
-        telegramMessageSender.sendTextMessage("Коллекция очищена");
+        telegramMessageSender.prepareMessageWithText("Коллекция очищена");
     }
 }

@@ -2,14 +2,11 @@ package ru.home.discountparser.scheduler;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.home.discountparser.ozon.OzonParser;
 import ru.home.discountparser.ozon.dto.Ozon;
-import ru.home.discountparser.telegram.TelegramService;
-import ru.home.discountparser.telegram.message.TelegramMessageSender;
+import ru.home.discountparser.telegram.message.MessageSender;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -27,7 +24,7 @@ import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
 public class OzonScheduler {
 
     private final  OzonParser ozonParser;
-    private final TelegramMessageSender telegramMessageSender;
+    private final MessageSender telegramMessageSender;
 
     /**
      * Запускает проверку доступности товаров на Ozon каждые 5 минут с случайной задержкой до 2 минут.
@@ -37,7 +34,6 @@ public class OzonScheduler {
     public void runCheckAvailableGoodsFromOzon() {
         // генерируем случайную задержку для натруальной имитации пользователя
         int randomDelay = new Random().nextInt(30);
-        log.info(LocalDateTime.now() + " Стартовал планировщик по озону");
         try {
             TimeUnit.SECONDS.sleep(randomDelay);
         } catch (InterruptedException e) {
@@ -45,7 +41,7 @@ public class OzonScheduler {
         }
 
         ozonParser.checkAvailabilityOfGoods();
-        telegramMessageSender.sendMessagesForOzon(ozonProducts);
+        telegramMessageSender.prepareMessageForOzon(ozonProducts);
         removeProcessedOzonItems();
     }
 

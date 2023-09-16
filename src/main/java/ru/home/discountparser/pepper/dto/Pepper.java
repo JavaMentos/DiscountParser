@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Scope("prototype")
 public class Pepper {
@@ -26,8 +24,4 @@ public class Pepper {
     private String url;
     private boolean isNew = true;
     private LocalDate date = LocalDate.now();
-
-    public void setIsNew(boolean isNew) {
-        this.isNew = isNew;
-    }
 }

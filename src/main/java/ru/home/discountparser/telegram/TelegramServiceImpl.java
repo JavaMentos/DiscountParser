@@ -8,14 +8,12 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.home.discountparser.ozon.dto.Ozon;
 import ru.home.discountparser.telegram.command.*;
 import ru.home.discountparser.telegram.config.TelegramProperties;
-import ru.home.discountparser.telegram.message.impl.IncomingMessageProcessing;
+import ru.home.discountparser.telegram.message.impl.IncomingMessageProcessorImpl;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -26,14 +24,14 @@ import java.util.function.Consumer;
 public class TelegramServiceImpl extends TelegramLongPollingBot implements TelegramService {
 
     private final TelegramProperties telegramProperties;
-    private final IncomingMessageProcessing messageProcessor;
+    private final IncomingMessageProcessorImpl messageProcessor;
     private HashMap<String, Consumer<Message>> commandMap = new HashMap<>();
 
     public TelegramServiceImpl(TestCommand testCommand, GetChatId getChatId,
                                GetCollectionUrlOzon getCollectionUrlOzon,
                                AddUrlOzon addUrlOzon,
                                ClearCollectionOzon clearCollectionOzon,
-                               IncomingMessageProcessing messageProcessor,
+                               IncomingMessageProcessorImpl messageProcessor,
                                TelegramProperties telegramProperties) {
         commandMap.put("/testcommand", testCommand);
         commandMap.put("/getchatid", getChatId);
@@ -60,7 +58,6 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
 
         if (update.hasMessage() && message.hasText()) {
             String currentChatId = message.getChatId().toString();
-            String currentUserId = message.getFrom().getId().toString();
 
             if (currentChatId.equals(telegramProperties.getChatId())) {
                 String textHasMessage = message.getText().replace(getBotUsername(), "");
@@ -79,8 +76,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
 
     public void sendTextWithImageUrl(String text, String imageUrl) {
         try {
-            execute(SendPhoto
-                    .builder()
+            execute(SendPhoto.builder()
                     .chatId(telegramProperties.getChatId())
                     .photo(new InputFile(imageUrl))
                     .caption(text)
@@ -92,7 +88,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
         }
     }
 
-    public void sendTextWithImageFile(String text, File imageFile) {
+    public void sendMessageWithImage(String text, File imageFile) {
         try {
             execute(SendPhoto.builder()
                     .chatId(telegramProperties.getChatId())
@@ -118,12 +114,5 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-    }
-
-    public void sendMessagesForOzon(List<Ozon> availableOzonItemPosts) {
-        availableOzonItemPosts.stream().filter(Ozon::isAvailable).forEach(ozon ->
-                sendTextWithImageFile(
-                        String.format("Товар появился в наличии %n%n %s", ozon.getProductUrl()), ozon.getScreenShot())
-        );
     }
 }

@@ -3,7 +3,7 @@ package ru.home.discountparser.telegram.command;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.telegram.message.TelegramMessageSender;
+import ru.home.discountparser.telegram.message.MessageSender;
 
 import java.util.function.Consumer;
 
@@ -17,7 +17,7 @@ import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
 @AllArgsConstructor
 public class GetCollectionUrlOzon implements Consumer<Message> {
 
-    private TelegramMessageSender telegramMessageSender;
+    private MessageSender telegramMessageSender;
 
     /**
      * Обрабатывает полученное сообщение и отправляет коллекцию ссылок на продукты с Ozon.
@@ -26,7 +26,7 @@ public class GetCollectionUrlOzon implements Consumer<Message> {
      */
     @Override
     public void accept(Message message) {
-        telegramMessageSender.sendTextMessage(formatOzonUrlList());
+        telegramMessageSender.prepareMessageWithText(formatOzonUrlList());
     }
 
     /**

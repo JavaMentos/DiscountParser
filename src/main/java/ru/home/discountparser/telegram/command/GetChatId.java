@@ -3,7 +3,7 @@ package ru.home.discountparser.telegram.command;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.telegram.message.TelegramMessageSender;
+import ru.home.discountparser.telegram.message.MessageSender;
 
 import java.util.function.Consumer;
 
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 @AllArgsConstructor
 public class GetChatId implements Consumer<Message> {
 
-    private TelegramMessageSender telegramMessageSender;
+    private MessageSender telegramMessageSender;
 
     /**
      * Обрабатывает полученное сообщение и отправляет идентификатор чата и пользователя.
@@ -25,6 +25,6 @@ public class GetChatId implements Consumer<Message> {
     @Override
     public void accept(Message message) {
         String format = String.format("ID chat: %s %nUser ID: %s", message.getChatId(), message.getFrom().getId());
-        telegramMessageSender.sendTextMessage(format);
+        telegramMessageSender.prepareMessageWithText(format);
     }
 }
