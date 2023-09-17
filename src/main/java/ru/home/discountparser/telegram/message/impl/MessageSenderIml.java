@@ -30,7 +30,7 @@ public class MessageSenderIml implements MessageSender {
     }
 
     @Override
-    public void prepareMessageWithAndImageFile(String text, File imageFile) {
+    public void prepareMessageWithImageFile(String text, File imageFile) {
         telegramService.sendMessageWithImage(text, imageFile);
     }
 

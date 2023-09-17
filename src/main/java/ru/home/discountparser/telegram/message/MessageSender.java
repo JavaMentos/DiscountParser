@@ -28,7 +28,7 @@ public interface MessageSender {
      * @param text     текст сообщения
      * @param imageFile файл изображения
      */
-    void prepareMessageWithAndImageFile(String text, File imageFile);
+    void prepareMessageWithImageFile(String text, File imageFile);
 
     /**
      * Подготавливает текстовое сообщение для отправки через Telegram.
