@@ -9,7 +9,6 @@ import ru.home.discountparser.pepper.dto.Pepper;
 import ru.home.discountparser.telegram.message.MessageSender;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPosts;
 
@@ -32,7 +31,7 @@ public class PepperScheduler {
      */
     @Scheduled(initialDelayString = "${schedule.pepper.init}", fixedDelayString = "${schedule.pepper.work}")
     public void checkNewPostsFromPepper() {
-        pepperParser.checkNewPosts();
+                pepperParser.checkNewPosts();
         sendMessagesForNewPepperPosts();
         currentPepperPosts.forEach(pepperPost -> pepperPost.setNew(false));
     }

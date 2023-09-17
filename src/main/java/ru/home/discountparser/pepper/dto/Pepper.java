@@ -22,6 +22,6 @@ public class Pepper {
     private String details;
     private String imageUrl;
     private String url;
-    private boolean isNew = true;
-    private LocalDate date = LocalDate.now();
+    private boolean isNew;
+    private LocalDate date;
 }

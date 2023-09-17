@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.discountparser.ozon.dto.Ozon;
-import ru.home.discountparser.telegram.TelegramService;
 import ru.home.discountparser.telegram.message.MessageSender;
 import ru.home.discountparser.telegram.state.TelegramBotState;
 

@@ -12,6 +12,7 @@ import ru.home.discountparser.pepper.dto.Pepper;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.time.LocalDate;
 import java.util.List;
 
 import static ru.home.discountparser.pepper.PepperListContainer.alertKeywords;
@@ -81,6 +82,7 @@ public class PepperParser {
                 .imageUrl(imageUrl)
                 .url(url)
                 .isNew(isAlertingProduct)
+                .date(LocalDate.now())
                 .build();
     }
 

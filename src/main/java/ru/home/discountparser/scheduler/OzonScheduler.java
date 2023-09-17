@@ -8,7 +8,6 @@ import ru.home.discountparser.ozon.OzonParser;
 import ru.home.discountparser.ozon.dto.Ozon;
 import ru.home.discountparser.telegram.message.MessageSender;
 
-import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
