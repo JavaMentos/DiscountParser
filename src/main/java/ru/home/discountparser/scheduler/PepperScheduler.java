@@ -41,7 +41,7 @@ public class PepperScheduler {
      */
     @Scheduled(cron = "0 0 */12 * * *")
     public void removeYesterdayPosts() {
-        if (currentPepperPosts.isEmpty()) {
+        if (!currentPepperPosts.isEmpty()) {
             log.info("Стартовал планировщик и очистил список постов, current "
                     + currentPepperPosts.size());
             LocalDate yesterday = LocalDate.now().minusDays(1);
