@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static ru.home.discountparser.pepper.PepperListContainer.alertKeywords;
 import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPosts;
@@ -72,6 +74,7 @@ public class PepperParser {
         String details = element.select("div.overflow--wrap-break.width--all-12.size--all-s[data-handler='lightbox-xhr emoticon-preview']").text();
         String imageUrl = element.select("img").attr("src");
         String url = getUrl(element);
+        String domainShop = extractDomain(url);
 
         return Pepper.builder()
                 .oldPrice(oldPriceString)
@@ -83,7 +86,20 @@ public class PepperParser {
                 .url(url)
                 .isNew(isAlertingProduct)
                 .date(LocalDate.now())
+                .domainShop(domainShop)
                 .build();
+    }
+
+    public String extractDomain(String url) {
+        String domain = "";
+        Pattern pattern = Pattern.compile("^(?:https?://)?(?:www\\.)?([^/]+)");
+        Matcher matcher = pattern.matcher(url);
+
+        if (matcher.find()) {
+            domain = matcher.group(1);
+        }
+
+        return domain;
     }
 
     private Elements getPostElements(Document document) {
@@ -168,6 +184,7 @@ public class PepperParser {
                 + "Старая цена <s>" + pepper.getOldPrice() + "</s>\n"
                 + "Новая цена <b>" + pepper.getNewPrice() + "</b>\n\n"
                 + "Описание:\n<i>" + pepper.getDetails() + "</i>\n\n"
+                + "Магазин - <i>" + pepper.getDomainShop() + "</i>\n"
                 + "<a href=\"" + pepper.getUrl() + "\">ссылка на товар</a>";
     }
 }

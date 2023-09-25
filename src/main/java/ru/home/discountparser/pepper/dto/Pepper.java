@@ -24,4 +24,5 @@ public class Pepper {
     private String url;
     private boolean isNew;
     private LocalDate date;
+    private String domainShop;
 }
