@@ -1,11 +1,11 @@
-package ru.home.discountparser.telegram.message.impl;
+package ru.home.discountparser.telegram.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import ru.home.discountparser.ozon.dto.Ozon;
-import ru.home.discountparser.telegram.TelegramService;
-import ru.home.discountparser.telegram.message.MessageSender;
+import ru.home.discountparser.telegram.service.MessageSender;
+import ru.home.discountparser.telegram.service.TelegramService;
 
 import java.io.File;
 import java.util.List;

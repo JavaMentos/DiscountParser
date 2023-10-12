@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.home.discountparser.ozon.OzonParser;
 import ru.home.discountparser.ozon.dto.Ozon;
-import ru.home.discountparser.telegram.message.MessageSender;
+import ru.home.discountparser.telegram.service.MessageSender;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;

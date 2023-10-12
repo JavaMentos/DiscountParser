@@ -1,4 +1,4 @@
-package ru.home.discountparser.telegram.message;
+package ru.home.discountparser.telegram.service;
 
 import org.telegram.telegrambots.meta.api.objects.Message;
 

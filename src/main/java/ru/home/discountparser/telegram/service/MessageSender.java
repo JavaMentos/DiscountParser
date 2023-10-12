@@ -1,4 +1,4 @@
-package ru.home.discountparser.telegram.message;
+package ru.home.discountparser.telegram.service;
 
 import ru.home.discountparser.ozon.dto.Ozon;
 

@@ -1,4 +1,4 @@
-package ru.home.discountparser.telegram;
+package ru.home.discountparser.telegram.service;
 
 import java.io.File;
 

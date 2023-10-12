@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.home.discountparser.pepper.PepperParser;
 import ru.home.discountparser.pepper.dto.Pepper;
-import ru.home.discountparser.telegram.message.MessageSender;
+import ru.home.discountparser.telegram.service.MessageSender;
 
 import java.time.LocalDate;
 
