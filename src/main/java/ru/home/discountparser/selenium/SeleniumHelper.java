@@ -114,6 +114,7 @@ public class SeleniumHelper {
             TimeUnit.SECONDS.sleep(second);
         } catch (InterruptedException e) {
             log.error(e.getMessage(),e);
+            Thread.currentThread().interrupt();
         }
     }
 }

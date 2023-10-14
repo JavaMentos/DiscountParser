@@ -1,0 +1,25 @@
+spring:
+  main:
+    web-application-type: none
+
+server:
+  port: 8082
+
+telegram:
+  userName: ${TELEGRAM_USERNAME}
+  token: ${TELEGRAM_TOKEN}
+  chatId: ${TELEGRAM_CHATID}
+  userId: ${TELEGRAM_USERID}
+  parseMode: HTML
+
+selenium:
+  headless:
+    mode: true
+
+schedule:
+  pepper:
+    init: 10000
+    work: 10000
+  ozon:
+    init: 10000
+    work: 10000

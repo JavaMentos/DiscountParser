@@ -37,6 +37,7 @@ public class OzonScheduler {
             TimeUnit.SECONDS.sleep(randomDelay);
         } catch (InterruptedException e) {
             log.error(e.getMessage(),e);
+            Thread.currentThread().interrupt();
         }
 
         ozonParser.checkAvailabilityOfGoods();
