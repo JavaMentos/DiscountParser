@@ -1,14 +1,14 @@
-package ru.home.discountparser.ozon;
+package ru.home.discountparser.parser.ozon;
 
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.*;
 import org.springframework.stereotype.Component;
-import ru.home.discountparser.ozon.dto.Ozon;
+import ru.home.discountparser.parser.ozon.dto.Ozon;
 import ru.home.discountparser.selenium.SeleniumHelper;
 
 import java.io.File;
 
-import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс OzonParser отвечает за проверку наличия товаров на сайте Ozon

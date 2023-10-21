@@ -1,4 +1,4 @@
-package ru.home.discountparser.pepper;
+package ru.home.discountparser.parser.pepper;
 
 import com.google.common.base.Strings;
 import lombok.extern.log4j.Log4j2;
@@ -8,17 +8,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
-import ru.home.discountparser.pepper.dto.Pepper;
+import ru.home.discountparser.parser.pepper.dto.Pepper;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.home.discountparser.pepper.PepperListContainer.alertKeywords;
-import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPosts;
+import static ru.home.discountparser.parser.pepper.PepperListContainer.*;
 
 /**
  * Класс PepperParser отслеживает новые скидки на товары на сайте pepper.ru.
@@ -26,9 +24,9 @@ import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPos
  */
 @Component
 @Log4j2
-public class PepperParser {
-    private final String pepperUrl = "https://www.pepper.ru/new";
-    private final double alertingPricePercentage = 30;
+public class PepperParserPost {
+    private static final String pepperUrl = "https://www.pepper.ru/new";
+    private static final double alertingPricePercentage = 30;
 
     /**
      * Метод проверяет новые публикации на сайте и добавляет их в список новых публикаций
@@ -50,7 +48,7 @@ public class PepperParser {
 
                 if ((isAlertingProduct || isNewPricePercentage) && isNewPost(productDescription)) {
                         Pepper newPepperPost = createNewPepperPost(element, true);
-                        currentPepperPosts.add(newPepperPost);
+                        addPepperPost(newPepperPost);
                 }
             }
         } catch (IOException e) {
@@ -139,7 +137,7 @@ public class PepperParser {
     }
 
     private boolean checkIfTitleContainsFavoriteWords(String productDescription) {
-        for (String keyword : alertKeywords) {
+        for (String keyword : getAllAlertKeywords()) {
             if (productDescription.toLowerCase().contains(keyword)) {
                 return true;
             }
@@ -169,7 +167,7 @@ public class PepperParser {
      * @return true, если объект Pepper является новой публикацией, иначе false.
      */
     private boolean isNewPost(String productDescription) {
-        return currentPepperPosts.stream()
+        return getAllPepperPosts().stream()
                 .noneMatch(d -> d.getProductDescription().equals(productDescription));
     }
 

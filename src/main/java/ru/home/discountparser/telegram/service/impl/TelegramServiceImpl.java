@@ -1,6 +1,7 @@
 package ru.home.discountparser.telegram.service.impl;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -20,7 +21,7 @@ import java.util.function.Consumer;
  * Класс TelegramServiceImpl предоставляет реализацию интерфейса TelegramService и обрабатывает
  * входящие сообщения от Telegram-бота.
  */
-@Component
+@Service
 public class TelegramServiceImpl extends TelegramLongPollingBot implements TelegramService {
 
     private final TelegramProperties telegramProperties;
@@ -60,7 +61,9 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Teleg
             String currentChatId = message.getChatId().toString();
 
             if (currentChatId.equals(telegramProperties.getChatId())) {
-                String textHasMessage = message.getText().replace(getBotUsername(), "");
+                String textHasMessage = message.getText()
+                        .replace(getBotUsername(), "")
+                        .replace("@","");
 
                 Consumer<Message> messageConsumer = commandMap.get(textHasMessage);
 

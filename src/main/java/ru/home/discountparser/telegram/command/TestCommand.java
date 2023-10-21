@@ -7,7 +7,7 @@ import ru.home.discountparser.telegram.service.MessageSender;
 
 import java.util.function.Consumer;
 
-import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPosts;
+import static ru.home.discountparser.parser.pepper.PepperListContainer.getPepperPostListSize;
 
 @Component
 @AllArgsConstructor
@@ -17,7 +17,7 @@ public class TestCommand implements Consumer<Message> {
 
     @Override
     public void accept(Message message) {
-        String text = String.format("Размер коллекции %d", currentPepperPosts.size());
+        String text = String.format("Размер коллекции %d", getPepperPostListSize());
         telegramMessageSender.prepareMessageWithText(text);
     }
 }

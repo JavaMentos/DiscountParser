@@ -2,18 +2,18 @@ package ru.home.discountparser.telegram.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.ozon.dto.Ozon;
+import ru.home.discountparser.parser.ozon.dto.Ozon;
 import ru.home.discountparser.telegram.service.MessageSender;
 import ru.home.discountparser.telegram.state.TelegramBotState;
 
-import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс IncomingMessageProcessing обрабатывает входящие сообщения от пользователей.
  */
-@Component
+@Service
 public class IncomingMessageProcessorImpl {
 
     @Autowired

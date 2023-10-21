@@ -7,7 +7,7 @@ import ru.home.discountparser.telegram.service.MessageSender;
 
 import java.util.function.Consumer;
 
-import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс GetCollectionUrlOzon обрабатывает полученное сообщение и отправляет коллекцию ссылок на продукты с Ozon.

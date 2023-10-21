@@ -1,4 +1,4 @@
-package ru.home.discountparser.ozon.dto;
+package ru.home.discountparser.parser.ozon.dto;
 
 import java.io.File;
 

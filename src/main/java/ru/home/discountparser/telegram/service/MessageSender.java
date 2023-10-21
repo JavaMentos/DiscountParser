@@ -1,6 +1,6 @@
 package ru.home.discountparser.telegram.service;
 
-import ru.home.discountparser.ozon.dto.Ozon;
+import ru.home.discountparser.parser.ozon.dto.Ozon;
 
 import java.io.File;
 import java.util.List;

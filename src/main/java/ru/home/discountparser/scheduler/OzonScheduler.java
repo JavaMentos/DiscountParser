@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.home.discountparser.ozon.OzonParser;
-import ru.home.discountparser.ozon.dto.Ozon;
+import ru.home.discountparser.parser.ozon.OzonParser;
+import ru.home.discountparser.parser.ozon.dto.Ozon;
 import ru.home.discountparser.telegram.service.MessageSender;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import static ru.home.discountparser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
 
 /**
  * Класс SchedulerOzon отвечает за проверку доступности товаров на Ozon

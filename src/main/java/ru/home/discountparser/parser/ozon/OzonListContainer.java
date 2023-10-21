@@ -1,8 +1,8 @@
-package ru.home.discountparser.ozon;
+package ru.home.discountparser.parser.ozon;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.home.discountparser.ozon.dto.Ozon;
+import ru.home.discountparser.parser.ozon.dto.Ozon;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

@@ -4,13 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.home.discountparser.pepper.PepperParser;
-import ru.home.discountparser.pepper.dto.Pepper;
-import ru.home.discountparser.telegram.service.MessageSender;
-
-import java.time.LocalDate;
-
-import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPosts;
+import ru.home.discountparser.parser.pepper.PepperParserCoupons;
+import ru.home.discountparser.telegram.service.PepperService;
 
 /**
  * Класс PepperScheduler отвечает за проверку новых публикаций на Pepper
@@ -21,9 +16,8 @@ import static ru.home.discountparser.pepper.PepperListContainer.currentPepperPos
 @AllArgsConstructor
 public class PepperScheduler {
 
-    private final MessageSender telegramMessageSender;
-
-    private final PepperParser pepperParser;
+    private final PepperService pepperService;
+    private final PepperParserCoupons pepperParserCoupons;
 
     /**
      * Запускает проверку новых публикаций на Pepper с заданным интервалом из конфигурации.
@@ -31,32 +25,18 @@ public class PepperScheduler {
      */
     @Scheduled(initialDelayString = "${schedule.pepper.init}", fixedDelayString = "${schedule.pepper.work}")
     public void checkNewPostsFromPepper() {
-                pepperParser.checkNewPosts();
-        sendMessagesForNewPepperPosts();
-        currentPepperPosts.forEach(pepperPost -> pepperPost.setNew(false));
+//        pepperService.checkNewPosts();
+        pepperParserCoupons.checkNewPosts();
     }
 
     /**
      * Удаляет устаревшие объекты публикаций на Pepper каждые 12 часов.
      */
     @Scheduled(cron = "0 0 */12 * * *")
-    public void removeYesterdayPosts() {
-        if (!currentPepperPosts.isEmpty()) {
-            log.info("Стартовал планировщик и очистил список постов, current "
-                    + currentPepperPosts.size());
-            LocalDate yesterday = LocalDate.now().minusDays(1);
-            currentPepperPosts.removeIf(pepperPost -> pepperPost.getDate().equals(yesterday));
-        }
+    public void removeOldPosts() {
+        pepperService.removeYesterdayPosts();
     }
 
-    /**
-     * Отправляет сообщения через сервис Telegram о новых публикациях на Pepper.
-     */
-    private void sendMessagesForNewPepperPosts() {
-        currentPepperPosts.stream()
-                .filter(Pepper::isNew)
-                .forEach(pepperPost -> telegramMessageSender.prepareMessageWithTextAndImageUrl(
-                        pepperParser.formatPepperPostMessage(pepperPost), pepperPost.getImageUrl())
-                );
-    }
+
+
 }
