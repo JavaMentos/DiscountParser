@@ -4,15 +4,13 @@ import java.time.LocalDate;
 
 import lombok.*;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /**
  * Класс Pepper представляет собой модель предложения на сайте Pepper.
  */
-@Component
+
 @Builder
 @Data
-@Scope("prototype")
 public class Pepper {
 
     private String oldPrice;
@@ -25,4 +23,5 @@ public class Pepper {
     private boolean isNew;
     private LocalDate date;
     private String domainShop;
+    private String hiddenUrl;
 }

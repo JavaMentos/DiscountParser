@@ -73,6 +73,7 @@ public class PepperParserPost {
         String imageUrl = element.select("img").attr("src");
         String url = getUrl(element);
         String domainShop = extractDomain(url);
+        String hiddenUrl = element.select("a").attr("href");
 
         return Pepper.builder()
                 .oldPrice(oldPriceString)
@@ -85,6 +86,7 @@ public class PepperParserPost {
                 .isNew(isAlertingProduct)
                 .date(LocalDate.now())
                 .domainShop(domainShop)
+                .hiddenUrl(hiddenUrl)
                 .build();
     }
 
@@ -182,7 +184,8 @@ public class PepperParserPost {
                 + "Старая цена <s>" + pepper.getOldPrice() + "</s>\n"
                 + "Новая цена <b>" + pepper.getNewPrice() + "</b>\n\n"
                 + "Описание:\n<i>" + pepper.getDetails() + "</i>\n\n"
-                + "Магазин - <i>" + pepper.getDomainShop() + "</i>\n"
+                + "<a href=\""  + pepper.getHiddenUrl() + "\">Магазин</a>"
+                + " - <i>" + pepper.getDomainShop() + "</i>\n"
                 + "<a href=\"" + pepper.getUrl() + "\">ссылка на товар</a>";
     }
 }

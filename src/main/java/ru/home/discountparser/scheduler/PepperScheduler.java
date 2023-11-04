@@ -25,8 +25,8 @@ public class PepperScheduler {
      */
     @Scheduled(initialDelayString = "${schedule.pepper.init}", fixedDelayString = "${schedule.pepper.work}")
     public void checkNewPostsFromPepper() {
-//        pepperService.checkNewPosts();
-        pepperParserCoupons.checkNewPosts();
+        pepperService.checkNewPosts();
+//        pepperParserCoupons.checkNewPosts();
     }
 
     /**

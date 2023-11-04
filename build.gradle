@@ -25,7 +25,7 @@ springBoot {
 // Замените блок jar на этот блок bootJar
 bootJar {
     archiveBaseName = 'DiscountParser'
-    archiveVersion = '1.0-SNAPSHOT'
+    archiveVersion = '1.0'
 }
 
 dependencies {
