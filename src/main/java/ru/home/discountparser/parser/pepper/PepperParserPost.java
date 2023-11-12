@@ -1,6 +1,7 @@
 package ru.home.discountparser.parser.pepper;
 
 import com.google.common.base.Strings;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -9,14 +10,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import ru.home.discountparser.parser.pepper.dto.Pepper;
+import ru.home.discountparser.service.PepperService;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.home.discountparser.parser.pepper.PepperListContainer.*;
+import static ru.home.discountparser.parser.pepper.PepperListContainer.getAllAlertKeywords;
 
 /**
  * Класс PepperParser отслеживает новые скидки на товары на сайте pepper.ru.
@@ -24,9 +25,12 @@ import static ru.home.discountparser.parser.pepper.PepperListContainer.*;
  */
 @Component
 @Log4j2
+@RequiredArgsConstructor
 public class PepperParserPost {
-    private static final String pepperUrl = "https://www.pepper.ru/new";
-    private static final double alertingPricePercentage = 30;
+    private static final String PEPPER_URL = "https://www.pepper.ru/new";
+    private static final double ALERTING_PRICE_PERCENTAGE = 30;
+    private final PepperService pepperService;
+
 
     /**
      * Метод проверяет новые публикации на сайте и добавляет их в список новых публикаций
@@ -35,7 +39,7 @@ public class PepperParserPost {
     public void checkNewPosts() {
 
         try {
-            Document document = Jsoup.connect(pepperUrl).get();
+            Document document = Jsoup.connect(PEPPER_URL).get();
 
             Elements postElements = getPostElements(document);
 
@@ -46,9 +50,9 @@ public class PepperParserPost {
                 boolean isAlertingProduct = checkIfTitleContainsFavoriteWords(productDescription);
                 boolean isNewPricePercentage = checkIfNewPostExpectedDiscountPrice(element);
 
-                if ((isAlertingProduct || isNewPricePercentage) && isNewPost(productDescription)) {
-                        Pepper newPepperPost = createNewPepperPost(element, true);
-                        addPepperPost(newPepperPost);
+                if ((isAlertingProduct || isNewPricePercentage) && !pepperService.existsById(productDescription)) {
+                    Pepper newPepperPost = createNewPepperPost(element);
+                    pepperService.addPost(newPepperPost);
                 }
             }
         } catch (IOException e) {
@@ -60,11 +64,10 @@ public class PepperParserPost {
     /**
      * Создает новый объект Pepper с указанными параметрами.
      *
-     * @param element           - объект из которого берутся данные по посту
-     * @param isAlertingProduct параметр чтобы добавить в оповвещение
+     * @param element - объект из которого берутся данные по посту
      * @return новый объект Pepper.
      */
-    private Pepper createNewPepperPost(Element element, boolean isAlertingProduct) {
+    private Pepper createNewPepperPost(Element element) {
         String oldPriceString = element.select("span[class=mute--text text--lineThrough size--all-l size--fromW3-xl]").text();
         String newPriceString = element.select("span[class=thread-price text--b cept-tp size--all-l size--fromW3-xl]").text();
         String discountPercentage = element.select("span[class=space--ml-1 size--all-l size--fromW3-xl]").text();
@@ -83,8 +86,6 @@ public class PepperParserPost {
                 .details(details)
                 .imageUrl(imageUrl)
                 .url(url)
-                .isNew(isAlertingProduct)
-                .date(LocalDate.now())
                 .domainShop(domainShop)
                 .hiddenUrl(hiddenUrl)
                 .build();
@@ -135,7 +136,7 @@ public class PepperParserPost {
             return false;
         }
         Double percentage = parseStringPercentage(discountPercentage);
-        return percentage >= alertingPricePercentage;
+        return percentage >= ALERTING_PRICE_PERCENTAGE;
     }
 
     private boolean checkIfTitleContainsFavoriteWords(String productDescription) {
@@ -160,32 +161,5 @@ public class PepperParserPost {
                 .replace("-", "")
                 .replace("%", "");
         return Double.parseDouble(replace);
-    }
-
-    /**
-     * Проверяет, является ли указанный объект Pepper новой публикацией.
-     *
-     * @param productDescription строка для проверки, был такой пост или нет.
-     * @return true, если объект Pepper является новой публикацией, иначе false.
-     */
-    private boolean isNewPost(String productDescription) {
-        return getAllPepperPosts().stream()
-                .noneMatch(d -> d.getProductDescription().equals(productDescription));
-    }
-
-    /**
-     * Форматирует сообщение с информацией о товаре из объекта Pepper.
-     *
-     * @param pepper объект Pepper, содержащий информацию о товаре.
-     * @return отформатированное сообщение с информацией о товаре.
-     */
-    public String formatPepperPostMessage(Pepper pepper) {
-        return pepper.getProductDescription() + "\n\n"
-                + "Старая цена <s>" + pepper.getOldPrice() + "</s>\n"
-                + "Новая цена <b>" + pepper.getNewPrice() + "</b>\n\n"
-                + "Описание:\n<i>" + pepper.getDetails() + "</i>\n\n"
-                + "<a href=\""  + pepper.getHiddenUrl() + "\">Магазин</a>"
-                + " - <i>" + pepper.getDomainShop() + "</i>\n"
-                + "<a href=\"" + pepper.getUrl() + "\">ссылка на товар</a>";
     }
 }

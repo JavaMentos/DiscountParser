@@ -34,6 +34,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-configuration-processor"
     implementation "org.springframework.boot:spring-boot-starter-log4j2"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+
+    //redis
+    implementation "redis.clients:jedis:${redisClients}"
 
     //test
     testImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -50,6 +54,9 @@ dependencies {
     implementation "org.jsoup:jsoup:${jsoup}"
     implementation "io.github.bonigarcia:webdrivermanager:${webdrivermanager}"
     implementation "org.seleniumhq.selenium:selenium-java:${selenium}"
+
+    implementation "commons-validator:commons-validator:${commonsValidator}"
+
 }
 
 test {

@@ -1,4 +1,4 @@
-package ru.home.discountparser.telegram.config;
+package ru.home.discountparser.telegram.properties;
 
 import lombok.Getter;
 import lombok.Setter;

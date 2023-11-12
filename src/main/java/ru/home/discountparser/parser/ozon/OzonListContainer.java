@@ -9,6 +9,5 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OzonListContainer {
-    public static List<Ozon> ozonProducts = new CopyOnWriteArrayList<>();
-
+    public static final List<Ozon> OZON_PRODUCTS = new CopyOnWriteArrayList<>();
 }

@@ -3,11 +3,11 @@ package ru.home.discountparser.telegram.command;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.telegram.service.MessageSender;
+import ru.home.discountparser.service.MessageSender;
 
 import java.util.function.Consumer;
 
-import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.OZON_PRODUCTS;
 
 /**
  * Класс-компонент, обрабатывающий очистку коллекции товаров Ozon.
@@ -26,7 +26,7 @@ public class ClearCollectionOzon implements Consumer<Message> {
     @Override
     public void accept(Message message) {
 
-        ozonProducts.clear();
+        OZON_PRODUCTS.clear();
         telegramMessageSender.prepareMessageWithText("Коллекция очищена");
     }
 }

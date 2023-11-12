@@ -3,7 +3,6 @@ package ru.home.discountparser.parser.ozon.dto;
 import java.io.File;
 
 import lombok.*;
-import org.springframework.context.annotation.Scope;
 
 /**
  * Класс Ozon представляет товар на сайте Ozon с информацией о наличии,

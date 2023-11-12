@@ -1,14 +1,15 @@
-package ru.home.discountparser.telegram.service.impl;
+package ru.home.discountparser.service.impl;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.home.discountparser.parser.ozon.dto.Ozon;
-import ru.home.discountparser.telegram.service.MessageSender;
+import ru.home.discountparser.service.MessageSender;
 import ru.home.discountparser.telegram.state.TelegramBotState;
 
-import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.OZON_PRODUCTS;
 
 /**
  * Класс IncomingMessageProcessing обрабатывает входящие сообщения от пользователей.
@@ -48,13 +49,13 @@ public class IncomingMessageProcessorImpl {
     }
 
     private boolean isValidUrl(String url) {
-        String regex = "(http|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])";
-        return url.matches(regex);
+        UrlValidator urlValidator = new UrlValidator();
+        return urlValidator.isValid(url);
     }
 
     private void addOzonUrl(String url) {
         Ozon ozon = new Ozon();
         ozon.setProductUrl(url);
-        ozonProducts.add(ozon);
+        OZON_PRODUCTS.add(ozon);
     }
 }

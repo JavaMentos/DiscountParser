@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.home.discountparser.parser.pepper.PepperParserCoupons;
-import ru.home.discountparser.telegram.service.PepperService;
+import ru.home.discountparser.parser.pepper.PepperParserPost;
 
 /**
  * Класс PepperScheduler отвечает за проверку новых публикаций на Pepper
@@ -16,8 +15,7 @@ import ru.home.discountparser.telegram.service.PepperService;
 @AllArgsConstructor
 public class PepperScheduler {
 
-    private final PepperService pepperService;
-    private final PepperParserCoupons pepperParserCoupons;
+    private final PepperParserPost pepperParserPost;
 
     /**
      * Запускает проверку новых публикаций на Pepper с заданным интервалом из конфигурации.
@@ -25,18 +23,6 @@ public class PepperScheduler {
      */
     @Scheduled(initialDelayString = "${schedule.pepper.init}", fixedDelayString = "${schedule.pepper.work}")
     public void checkNewPostsFromPepper() {
-        pepperService.checkNewPosts();
-//        pepperParserCoupons.checkNewPosts();
+        pepperParserPost.checkNewPosts();
     }
-
-    /**
-     * Удаляет устаревшие объекты публикаций на Pepper каждые 12 часов.
-     */
-    @Scheduled(cron = "0 0 */12 * * *")
-    public void removeOldPosts() {
-        pepperService.removeYesterdayPosts();
-    }
-
-
-
 }

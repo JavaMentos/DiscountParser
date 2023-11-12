@@ -3,7 +3,7 @@ package ru.home.discountparser.telegram.command;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.telegram.service.MessageSender;
+import ru.home.discountparser.service.MessageSender;
 import ru.home.discountparser.telegram.state.TelegramBotState;
 
 import java.util.function.Consumer;

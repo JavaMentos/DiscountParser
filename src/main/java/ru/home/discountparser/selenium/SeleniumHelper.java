@@ -29,9 +29,9 @@ public class SeleniumHelper {
     private WebDriver driver;
     @Value("${selenium.headless.mode}")
     private boolean headlessMode;
-    private final int timeoutInSeconds = 10;
-    private final int dimensionWidth = 1600;
-    private final int dimensionHeight = 1200;
+    private static final int TIMEOUT_IN_SECONDS = 10;
+    private static final int DIMENSION_WIDTH = 1600;
+    private static final int DIMENSION_HEIGHT = 1200;
 
     public WebDriver getDriver() {
         return driver;
@@ -45,9 +45,9 @@ public class SeleniumHelper {
         options = new ChromeOptions();
         options.setHeadless(headlessMode);
 
-        options.setImplicitWaitTimeout(Duration.ofSeconds(timeoutInSeconds));
-        options.setPageLoadTimeout(Duration.ofSeconds(timeoutInSeconds));
-        options.setScriptTimeout(Duration.ofSeconds(timeoutInSeconds));
+        options.setImplicitWaitTimeout(Duration.ofSeconds(TIMEOUT_IN_SECONDS));
+        options.setPageLoadTimeout(Duration.ofSeconds(TIMEOUT_IN_SECONDS));
+        options.setScriptTimeout(Duration.ofSeconds(TIMEOUT_IN_SECONDS));
 
         options.addArguments("start-maximized");
         options.addArguments("disable-infobars");
@@ -64,7 +64,7 @@ public class SeleniumHelper {
         driver = new ChromeDriver(options);
 
         // Установка размера окна
-        Dimension dim = new Dimension(dimensionWidth, dimensionHeight);
+        Dimension dim = new Dimension(DIMENSION_WIDTH, DIMENSION_HEIGHT);
         driver.manage().window().setSize(dim);
     }
 

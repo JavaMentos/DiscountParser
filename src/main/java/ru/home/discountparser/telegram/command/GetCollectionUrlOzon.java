@@ -3,11 +3,11 @@ package ru.home.discountparser.telegram.command;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.home.discountparser.telegram.service.MessageSender;
+import ru.home.discountparser.service.MessageSender;
 
 import java.util.function.Consumer;
 
-import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.OZON_PRODUCTS;
 
 /**
  * Класс GetCollectionUrlOzon обрабатывает полученное сообщение и отправляет коллекцию ссылок на продукты с Ozon.
@@ -37,11 +37,11 @@ public class GetCollectionUrlOzon implements Consumer<Message> {
     private String formatOzonUrlList() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Всего ссылок: ")
-                .append(ozonProducts.size())
+                .append(OZON_PRODUCTS.size())
                 .append(" - https://www.ozon.ru")
                 .append("\n\n");
 
-        ozonProducts.forEach(ozon ->
+        OZON_PRODUCTS.forEach(ozon ->
                 stringBuilder.append(ozon.getProductUrl())
                         .append("\n\n")
         );

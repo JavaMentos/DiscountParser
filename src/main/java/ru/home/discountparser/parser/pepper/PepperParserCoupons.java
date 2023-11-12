@@ -13,27 +13,15 @@ import java.io.IOException;
 @Log4j2
 public class PepperParserCoupons {
 
-    private static final String pepperUrl = "https://www.pepper.ru/coupons";
+    private static final String PEPPER_URL = "https://www.pepper.ru/coupons";
 
     public void checkNewPosts() {
 
         try {
-            Document document = Jsoup.connect(pepperUrl).get();
+            Document document = Jsoup.connect(PEPPER_URL).get();
 
             Elements postElements = getCouponsElements(document);
 
-//            for (Element element : postElements) {
-
-//                String productDescription = getProductDescription(element);
-//
-//                boolean isAlertingProduct = checkIfTitleContainsFavoriteWords(productDescription);
-//                boolean isNewPricePercentage = checkIfNewPostExpectedDiscountPrice(element);
-//
-//                if ((isAlertingProduct || isNewPricePercentage) && isNewPost(productDescription)) {
-//                    Pepper newPepperPost = createNewPepperPost(element, true);
-//                    addPepperPost(newPepperPost);
-//                }
-//            }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

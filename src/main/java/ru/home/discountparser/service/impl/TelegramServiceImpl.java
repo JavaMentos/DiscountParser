@@ -1,6 +1,5 @@
-package ru.home.discountparser.telegram.service.impl;
+package ru.home.discountparser.service.impl;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,9 +8,9 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.home.discountparser.service.TelegramService;
 import ru.home.discountparser.telegram.command.*;
-import ru.home.discountparser.telegram.config.TelegramProperties;
-import ru.home.discountparser.telegram.service.TelegramService;
+import ru.home.discountparser.telegram.properties.TelegramProperties;
 
 import java.io.File;
 import java.util.HashMap;

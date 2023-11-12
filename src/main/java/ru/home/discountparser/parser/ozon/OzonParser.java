@@ -8,7 +8,7 @@ import ru.home.discountparser.selenium.SeleniumHelper;
 
 import java.io.File;
 
-import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.OZON_PRODUCTS;
 
 /**
  * Класс OzonParser отвечает за проверку наличия товаров на сайте Ozon
@@ -25,9 +25,9 @@ public class OzonParser {
      * и скриншоты для товаров, которые стали доступными.
      */
     public void checkAvailabilityOfGoods() {
-        if (ozonProducts.isEmpty()) return;
+        if (OZON_PRODUCTS.isEmpty()) return;
 
-        for (Ozon ozonProduct : ozonProducts) {
+        for (Ozon ozonProduct : OZON_PRODUCTS) {
             seleniumHelper.runSelenium();
 
             Ozon ozon = ozonProduct;

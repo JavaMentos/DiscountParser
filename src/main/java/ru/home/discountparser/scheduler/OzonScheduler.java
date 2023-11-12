@@ -6,12 +6,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.home.discountparser.parser.ozon.OzonParser;
 import ru.home.discountparser.parser.ozon.dto.Ozon;
-import ru.home.discountparser.telegram.service.MessageSender;
+import ru.home.discountparser.service.MessageSender;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import static ru.home.discountparser.parser.ozon.OzonListContainer.ozonProducts;
+import static ru.home.discountparser.parser.ozon.OzonListContainer.OZON_PRODUCTS;
 
 /**
  * Класс SchedulerOzon отвечает за проверку доступности товаров на Ozon
@@ -41,7 +41,7 @@ public class OzonScheduler {
         }
 
         ozonParser.checkAvailabilityOfGoods();
-        telegramMessageSender.prepareMessageForOzon(ozonProducts);
+        telegramMessageSender.prepareMessageForOzon(OZON_PRODUCTS);
         removeProcessedOzonItems();
     }
 
@@ -50,6 +50,6 @@ public class OzonScheduler {
      * Удаляет товары, доступность которых уже была проверена и уведомления отправлены.
      */
     private void removeProcessedOzonItems() {
-        ozonProducts.removeIf(Ozon::isAvailable);
+        OZON_PRODUCTS.removeIf(Ozon::isAvailable);
     }
 }
