@@ -5,11 +5,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 /**
- * Класс Pepper представляет собой модель предложения на сайте Pepper.
+ * Класс Pepper представляет собой модель поста.
+ * Используется для хранения данных поста в Redis с указанным временем жизни ключа.
  */
 @Builder
 @Data
-@RedisHash(value = "Pepper", timeToLive = 300L)
+@RedisHash(value = "Pepper", timeToLive = 21600L)
 public class Pepper {
     @Id
     private String productDescription;
